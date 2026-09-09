@@ -14,10 +14,9 @@ export default function Login({ initialMode = 'create' }) {
     e.preventDefault();
     setError('');
 
-    // Check for empty fields
     if (mode === 'create') {
       if (!username.trim() || !email.trim() || !password || !confirmPassword) {
-        setError('Please fill out all required fields.');
+        setError('Please fill in all fields.');
         return;
       }
 
@@ -29,7 +28,7 @@ export default function Login({ initialMode = 'create' }) {
       try {
         setLoading(true);
 
-        // Create user entity record
+        // Creates user record with all required schema attributes
         await base44.entities.User.create({
           username: username.trim(),
           email: email.trim(),
@@ -43,7 +42,7 @@ export default function Login({ initialMode = 'create' }) {
       } catch (err) {
         console.error('Sign up error:', err);
         setLoading(false);
-        setError(err.message || 'Failed to create account. Ensure all required fields are filled.');
+        setError(err.message || 'Failed to create account.');
       }
     } else {
       try {
@@ -55,6 +54,12 @@ export default function Login({ initialMode = 'create' }) {
         setError(err.message || 'Failed to sign in.');
       }
     }
+  };
+
+  const inputStyle = {
+    color: '#000000',
+    backgroundColor: '#ffffff',
+    colorScheme: 'light'
   };
 
   return (
@@ -74,7 +79,7 @@ export default function Login({ initialMode = 'create' }) {
           </p>
         </div>
 
-        {/* Mode Selector */}
+        {/* Mode Switcher */}
         <div className="mb-6 flex rounded-lg bg-gray-100 p-1">
           <button
             type="button"
@@ -116,7 +121,8 @@ export default function Login({ initialMode = 'create' }) {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Bob"
-                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 outline-none focus:border-black focus:ring-1 focus:ring-black"
+                style={inputStyle}
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-black focus:ring-1 focus:ring-black"
               />
             </div>
           )}
@@ -131,7 +137,8 @@ export default function Login({ initialMode = 'create' }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="bob@gmail.com"
-              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 outline-none focus:border-black focus:ring-1 focus:ring-black"
+              style={inputStyle}
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-black focus:ring-1 focus:ring-black"
             />
           </div>
 
@@ -145,7 +152,8 @@ export default function Login({ initialMode = 'create' }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 outline-none focus:border-black focus:ring-1 focus:ring-black"
+              style={inputStyle}
+              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-black focus:ring-1 focus:ring-black"
             />
           </div>
 
@@ -160,7 +168,8 @@ export default function Login({ initialMode = 'create' }) {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 outline-none focus:border-black focus:ring-1 focus:ring-black"
+                style={inputStyle}
+                className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-black focus:ring-1 focus:ring-black"
               />
             </div>
           )}
