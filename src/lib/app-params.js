@@ -18,10 +18,10 @@ const getAppParams = () => {
 		appId: import.meta.env.VITE_BASE44_APP_ID,
 		token: getAccessToken(),
 		functionsVersion: import.meta.env.VITE_BASE44_FUNCTIONS_VERSION,
-		appBaseUrl: import.meta.env.VITE_BASE44_APP_BASE_URL,
+		appBaseUrl: import.meta.env.VITE_BASE44_APP_BASE_URL || 'https://base44.app',
+		serverUrl: import.meta.env.VITE_BASE44_SERVER_URL || 'https://base44.app',
 	}
 }
-
 
 export const appParams = {
 	...getAppParams()
