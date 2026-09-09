@@ -16,7 +16,7 @@ export default function Login({ initialMode = 'create' }) {
 
     if (mode === 'create') {
       if (!username.trim() || !email.trim() || !password || !confirmPassword) {
-        setError('Please fill in all input fields.');
+        setError('Please fill in all fields.');
         return;
       }
 
@@ -28,7 +28,6 @@ export default function Login({ initialMode = 'create' }) {
       try {
         setLoading(true);
 
-        // Creates user record directly in your database entity
         await base44.entities.User.create({
           username: username.trim(),
           email: email.trim().toLowerCase(),
@@ -37,46 +36,22 @@ export default function Login({ initialMode = 'create' }) {
         });
 
         setLoading(false);
-        alert('Account created successfully! You can now log in.');
+        alert('Account created successfully! Click "Sign in" to log in.');
         setMode('signin');
       } catch (err) {
         console.error('Sign up error:', err);
         setLoading(false);
-        setError(err.message || 'Failed to create account. Please try again.');
+        setError(err.message || 'Failed to create account.');
       }
     } else {
-      if (!email.trim() || !password) {
-        setError('Please enter your email and password.');
-        return;
-      }
-
       try {
         setLoading(true);
-
-        // Queries the User entity in your database without triggering a Base44 portal redirect
-        const existingUsers = await base44.entities.User.filter({
-          email: email.trim().toLowerCase()
-        });
-
-        if (!existingUsers || existingUsers.length === 0) {
-          throw new Error('Account not found with this email.');
-        }
-
-        const matchUser = existingUsers.find((u) => u.password === password);
-
-        if (!matchUser) {
-          throw new Error('Incorrect password.');
-        }
-
-        // Store session locally
-        localStorage.setItem('app_user', JSON.stringify(matchUser));
-
-        setLoading(false);
-        window.location.href = '/';
+        // Use standard Base44 login redirect
+        base44.auth.redirectToLogin(window.location.href);
       } catch (err) {
         console.error('Sign in error:', err);
         setLoading(false);
-        setError(err.message || 'Invalid email or password.');
+        setError(err.message || 'Failed to start sign in.');
       }
     }
   };
@@ -132,7 +107,7 @@ export default function Login({ initialMode = 'create' }) {
           </button>
         </div>
 
-        {/* Error Alert */}
+        {/* Error Banner */}
         {error && (
           <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 border border-red-100 flex items-center gap-2">
             <span>⚠️</span>
@@ -164,7 +139,7 @@ export default function Login({ initialMode = 'create' }) {
             </label>
             <input
               type="email"
-              required
+              required={mode === 'create'}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="bob@gmail.com"
@@ -179,7 +154,7 @@ export default function Login({ initialMode = 'create' }) {
             </label>
             <input
               type="password"
-              required
+              required={mode === 'create'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
