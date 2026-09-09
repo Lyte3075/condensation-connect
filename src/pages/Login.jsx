@@ -16,7 +16,7 @@ export default function Login({ initialMode = 'create' }) {
 
     if (mode === 'create') {
       if (!username.trim() || !email.trim() || !password || !confirmPassword) {
-        setError('Please fill out all fields.');
+        setError('Please fill in all input fields.');
         return;
       }
 
@@ -28,12 +28,11 @@ export default function Login({ initialMode = 'create' }) {
       try {
         setLoading(true);
 
-        // Uses Base44 standard auth registration with required full_name property
-        await base44.auth.register({
-          email: email.trim(),
-          password: password,
-          full_name: username.trim(),
+        // Creates user record directly in your database entity
+        await base44.entities.User.create({
           username: username.trim(),
+          email: email.trim().toLowerCase(),
+          password: password,
           role: 'user'
         });
 
@@ -43,7 +42,7 @@ export default function Login({ initialMode = 'create' }) {
       } catch (err) {
         console.error('Sign up error:', err);
         setLoading(false);
-        setError(err.message || 'Failed to create account. Please check all fields.');
+        setError(err.message || 'Failed to create account. Please try again.');
       }
     } else {
       if (!email.trim() || !password) {
@@ -54,14 +53,26 @@ export default function Login({ initialMode = 'create' }) {
       try {
         setLoading(true);
 
-        // Direct in-app login without redirecting to Base44 platform site
-        await base44.auth.login({
-          email: email.trim(),
-          password: password
+        // Queries the User entity in your database without triggering a Base44 portal redirect
+        const existingUsers = await base44.entities.User.filter({
+          email: email.trim().toLowerCase()
         });
 
+        if (!existingUsers || existingUsers.length === 0) {
+          throw new Error('Account not found with this email.');
+        }
+
+        const matchUser = existingUsers.find((u) => u.password === password);
+
+        if (!matchUser) {
+          throw new Error('Incorrect password.');
+        }
+
+        // Store session locally
+        localStorage.setItem('app_user', JSON.stringify(matchUser));
+
         setLoading(false);
-        window.location.reload();
+        window.location.href = '/';
       } catch (err) {
         console.error('Sign in error:', err);
         setLoading(false);
@@ -93,7 +104,7 @@ export default function Login({ initialMode = 'create' }) {
           </p>
         </div>
 
-        {/* Mode Selector */}
+        {/* Mode Switcher */}
         <div className="mb-6 flex rounded-lg bg-gray-100 p-1">
           <button
             type="button"
