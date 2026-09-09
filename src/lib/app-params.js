@@ -15,11 +15,11 @@ const getAppParams = () => {
 		clearStoredAccessToken();
 	}
 	return {
-		appId: import.meta.env.VITE_BASE44_APP_ID,
+		appId: import.meta.env.VITE_BASE44_APP_ID || '6a9e45dcc387fc45673cb880',
 		token: getAccessToken(),
-		functionsVersion: import.meta.env.VITE_BASE44_FUNCTIONS_VERSION,
-		appBaseUrl: import.meta.env.VITE_BASE44_APP_BASE_URL || 'https://base44.app',
-		serverUrl: import.meta.env.VITE_BASE44_SERVER_URL || 'https://base44.app',
+		functionsVersion: import.meta.env.VITE_BASE44_FUNCTIONS_VERSION || 'v1',
+		appBaseUrl: import.meta.env.VITE_BASE44_APP_BASE_URL || 'https://app.base44.com',
+		serverUrl: import.meta.env.VITE_BASE44_SERVER_URL || 'https://app.base44.com',
 	}
 }
 
