@@ -2,6 +2,18 @@
   "name": "User",
   "type": "object",
   "properties": {
+    "username": {
+      "type": "string",
+      "description": "User handle"
+    },
+    "email": {
+      "type": "string",
+      "description": "User email address"
+    },
+    "password": {
+      "type": "string",
+      "description": "User account password"
+    },
     "role": {
       "type": "string",
       "description": "The role of the user in the app",
@@ -12,6 +24,9 @@
     }
   },
   "required": [
+    "username",
+    "email",
+    "password",
     "role"
   ],
   "permissions": {
