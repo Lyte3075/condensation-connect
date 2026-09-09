@@ -16,7 +16,7 @@ export default function Login({ initialMode = 'create' }) {
 
     if (mode === 'create') {
       if (!username.trim() || !email.trim() || !password || !confirmPassword) {
-        setError('Please fill in all fields.');
+        setError('Please fill in all input fields.');
         return;
       }
 
@@ -36,22 +36,46 @@ export default function Login({ initialMode = 'create' }) {
         });
 
         setLoading(false);
-        alert('Account created successfully! Click "Sign in" to log in.');
+        alert('Account created successfully! You can now log in.');
         setMode('signin');
       } catch (err) {
         console.error('Sign up error:', err);
         setLoading(false);
-        setError(err.message || 'Failed to create account.');
+        setError(err.message || 'Failed to create account. Please try again.');
       }
     } else {
+      if (!email.trim() || !password) {
+        setError('Please enter your email and password.');
+        return;
+      }
+
       try {
         setLoading(true);
-        // Use standard Base44 login redirect
-        base44.auth.redirectToLogin(window.location.href);
+
+        // Fetch user from your own entity without triggering Base44's site redirect
+        const users = await base44.entities.User.filter({
+          email: email.trim().toLowerCase()
+        });
+
+        if (!users || users.length === 0) {
+          throw new Error('Account not found with this email.');
+        }
+
+        const validUser = users.find((u) => u.password === password);
+
+        if (!validUser) {
+          throw new Error('Incorrect password.');
+        }
+
+        // Save local session
+        localStorage.setItem('app_user', JSON.stringify(validUser));
+
+        setLoading(false);
+        window.location.reload();
       } catch (err) {
         console.error('Sign in error:', err);
         setLoading(false);
-        setError(err.message || 'Failed to start sign in.');
+        setError(err.message || 'Invalid email or password.');
       }
     }
   };
@@ -107,7 +131,7 @@ export default function Login({ initialMode = 'create' }) {
           </button>
         </div>
 
-        {/* Error Banner */}
+        {/* Error Alert */}
         {error && (
           <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 border border-red-100 flex items-center gap-2">
             <span>⚠️</span>
@@ -139,7 +163,7 @@ export default function Login({ initialMode = 'create' }) {
             </label>
             <input
               type="email"
-              required={mode === 'create'}
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="bob@gmail.com"
@@ -154,7 +178,7 @@ export default function Login({ initialMode = 'create' }) {
             </label>
             <input
               type="password"
-              required={mode === 'create'}
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
