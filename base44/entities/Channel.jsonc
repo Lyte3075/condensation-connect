@@ -1,0 +1,41 @@
+{
+  "name": "Channel",
+  "type": "object",
+  "properties": {
+    "server_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "text",
+        "dm",
+        "group",
+        "voice",
+        "stage"
+      ],
+      "default": "text"
+    },
+    "member_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "topic": {
+      "type": "string",
+      "default": ""
+    },
+    "restricted": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "name",
+    "type"
+  ]
+}

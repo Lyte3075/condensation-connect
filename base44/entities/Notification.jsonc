@@ -1,0 +1,47 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "The user who receives this notification"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "mention",
+        "friend_request",
+        "friend_accept",
+        "server_alert"
+      ],
+      "default": "server_alert"
+    },
+    "actor_username": {
+      "type": "string"
+    },
+    "actor_avatar": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "channel_id": {
+      "type": "string"
+    },
+    "server_id": {
+      "type": "string"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "user_id",
+    "type",
+    "title"
+  ]
+}

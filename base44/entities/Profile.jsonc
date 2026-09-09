@@ -1,0 +1,74 @@
+{
+  "name": "Profile",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "username": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "online",
+        "idle",
+        "dnd",
+        "invisible"
+      ],
+      "default": "online"
+    },
+    "avatar_url": {
+      "type": "string"
+    },
+    "accent_color": {
+      "type": "string",
+      "default": "#CCFF00"
+    },
+    "theme_mode": {
+      "type": "string",
+      "enum": [
+        "dark",
+        "light",
+        "system"
+      ],
+      "default": "dark"
+    },
+    "font_family": {
+      "type": "string",
+      "default": "jakarta"
+    },
+    "chat_bg": {
+      "type": "string",
+      "default": "none"
+    },
+    "allow_friend_requests": {
+      "type": "boolean",
+      "default": true
+    },
+    "allow_dms": {
+      "type": "boolean",
+      "default": true
+    },
+    "blocked_user_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  },
+  "required": [
+    "user_id",
+    "username"
+  ]
+}

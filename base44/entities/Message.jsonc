@@ -1,0 +1,26 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "channel_id": {
+      "type": "string"
+    },
+    "author_id": {
+      "type": "string"
+    },
+    "author_username": {
+      "type": "string"
+    },
+    "author_avatar": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "channel_id",
+    "author_id",
+    "content"
+  ]
+}

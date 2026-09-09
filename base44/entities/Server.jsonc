@@ -1,0 +1,50 @@
+{
+  "name": "Server",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "icon_url": {
+      "type": "string"
+    },
+    "owner_id": {
+      "type": "string"
+    },
+    "member_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "admin_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "moderator_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "is_starter": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "owner_id"
+  ]
+}
