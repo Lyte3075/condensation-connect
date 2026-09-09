@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useAuth } from '@/lib/AuthContext';
 
-export default function Login({ initialMode = 'signin' }) {
+export default function Login({ initialMode = 'create' }) {
   const [mode, setMode] = useState(initialMode);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -15,7 +14,13 @@ export default function Login({ initialMode = 'signin' }) {
     e.preventDefault();
     setError('');
 
+    // Check for empty fields
     if (mode === 'create') {
+      if (!username.trim() || !email.trim() || !password || !confirmPassword) {
+        setError('Please fill out all required fields.');
+        return;
+      }
+
       if (password !== confirmPassword) {
         setError('Passwords do not match.');
         return;
@@ -23,30 +28,29 @@ export default function Login({ initialMode = 'signin' }) {
 
       try {
         setLoading(true);
-        // Step 1: Create the User entity in Base44
+
+        // Create user entity record
         await base44.entities.User.create({
-          username: username,
-          email: email,
+          username: username.trim(),
+          email: email.trim(),
           password: password,
           role: 'user'
         });
 
-        // Step 2: Verify step or redirect to login after creation
         setLoading(false);
         alert('Account created successfully! You can now log in.');
         setMode('signin');
       } catch (err) {
-        console.error(err);
+        console.error('Sign up error:', err);
         setLoading(false);
-        setError(err.message || 'Failed to create account.');
+        setError(err.message || 'Failed to create account. Ensure all required fields are filled.');
       }
     } else {
       try {
         setLoading(true);
-        // Use Base44 standard authentication redirect or login method
         base44.auth.redirectToLogin(window.location.href);
       } catch (err) {
-        console.error(err);
+        console.error('Sign in error:', err);
         setLoading(false);
         setError(err.message || 'Failed to sign in.');
       }
@@ -70,7 +74,7 @@ export default function Login({ initialMode = 'signin' }) {
           </p>
         </div>
 
-        {/* Mode Switcher Buttons */}
+        {/* Mode Selector */}
         <div className="mb-6 flex rounded-lg bg-gray-100 p-1">
           <button
             type="button"
@@ -92,7 +96,7 @@ export default function Login({ initialMode = 'signin' }) {
           </button>
         </div>
 
-        {/* Error Banner */}
+        {/* Error Alert */}
         {error && (
           <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 border border-red-100 flex items-center gap-2">
             <span>⚠️</span>
@@ -112,7 +116,7 @@ export default function Login({ initialMode = 'signin' }) {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Bob"
-                className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-black"
+                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 outline-none focus:border-black focus:ring-1 focus:ring-black"
               />
             </div>
           )}
@@ -127,7 +131,7 @@ export default function Login({ initialMode = 'signin' }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="bob@gmail.com"
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-black"
+              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 outline-none focus:border-black focus:ring-1 focus:ring-black"
             />
           </div>
 
@@ -141,7 +145,7 @@ export default function Login({ initialMode = 'signin' }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-black"
+              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 outline-none focus:border-black focus:ring-1 focus:ring-black"
             />
           </div>
 
@@ -156,7 +160,7 @@ export default function Login({ initialMode = 'signin' }) {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="mt-1 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-black"
+                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-black placeholder-gray-400 outline-none focus:border-black focus:ring-1 focus:ring-black"
               />
             </div>
           )}
