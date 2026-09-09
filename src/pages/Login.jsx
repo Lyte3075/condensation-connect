@@ -16,7 +16,7 @@ export default function Login({ initialMode = 'create' }) {
 
     if (mode === 'create') {
       if (!username.trim() || !email.trim() || !password || !confirmPassword) {
-        setError('Please fill in all fields.');
+        setError('Please fill out all fields.');
         return;
       }
 
@@ -28,11 +28,12 @@ export default function Login({ initialMode = 'create' }) {
       try {
         setLoading(true);
 
-        // Creates user record with all required schema attributes
-        await base44.entities.User.create({
-          username: username.trim(),
+        // Uses Base44 standard auth registration with required full_name property
+        await base44.auth.register({
           email: email.trim(),
           password: password,
+          full_name: username.trim(),
+          username: username.trim(),
           role: 'user'
         });
 
@@ -42,16 +43,29 @@ export default function Login({ initialMode = 'create' }) {
       } catch (err) {
         console.error('Sign up error:', err);
         setLoading(false);
-        setError(err.message || 'Failed to create account.');
+        setError(err.message || 'Failed to create account. Please check all fields.');
       }
     } else {
+      if (!email.trim() || !password) {
+        setError('Please enter your email and password.');
+        return;
+      }
+
       try {
         setLoading(true);
-        base44.auth.redirectToLogin(window.location.href);
+
+        // Direct in-app login without redirecting to Base44 platform site
+        await base44.auth.login({
+          email: email.trim(),
+          password: password
+        });
+
+        setLoading(false);
+        window.location.reload();
       } catch (err) {
         console.error('Sign in error:', err);
         setLoading(false);
-        setError(err.message || 'Failed to sign in.');
+        setError(err.message || 'Invalid email or password.');
       }
     }
   };
@@ -74,16 +88,19 @@ export default function Login({ initialMode = 'create' }) {
           </h1>
           <p className="mt-2 text-sm text-gray-500">
             {mode === 'create'
-              ? 'Pick a unique username and a real email — you’ll confirm it with a quick code.'
+              ? 'Pick a unique username and a real email to get started.'
               : 'Sign in to access your account'}
           </p>
         </div>
 
-        {/* Mode Switcher */}
+        {/* Mode Selector */}
         <div className="mb-6 flex rounded-lg bg-gray-100 p-1">
           <button
             type="button"
-            onClick={() => setMode('signin')}
+            onClick={() => {
+              setMode('signin');
+              setError('');
+            }}
             className={`flex-1 rounded-md py-2 text-sm font-medium transition ${
               mode === 'signin' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900'
             }`}
@@ -92,7 +109,10 @@ export default function Login({ initialMode = 'create' }) {
           </button>
           <button
             type="button"
-            onClick={() => setMode('create')}
+            onClick={() => {
+              setMode('create');
+              setError('');
+            }}
             className={`flex-1 rounded-md py-2 text-sm font-medium transition ${
               mode === 'create' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900'
             }`}
